@@ -24,8 +24,16 @@ export default class Page {
   }
 
   async updateTableComponent (from, to) {
-    const data = await fetchJson(`${process.env.BACKEND_URL}api/dashboard/bestsellers?_start=1&_end=20&from=${from.toISOString()}&to=${to.toISOString()}`);
+    this.components.sortableTable.url = this.getTableUrl(from, to);
+    const data = await this.components.sortableTable.loadData();
     this.components.sortableTable.addRows(data);
+  }
+
+  getTableUrl(from, to) {
+    const url = new URL('api/dashboard/bestsellers', process.env.BACKEND_URL);
+    url.searchParams.set('from', from.toISOString());
+    url.searchParams.set('to', to.toISOString());
+    return url;
   }
 
   async updateChartsComponents (from, to) {
@@ -50,8 +58,8 @@ export default class Page {
     });
 
     const sortableTable = new SortableTable(header, {
-      url: `api/dashboard/bestsellers?_start=1&_end=20&from=${from.toISOString()}&to=${to.toISOString()}`,
-      isSortLocally: true
+      url: this.getTableUrl(from, to),
+      isSortLocally: true,
     });
 
     const ordersChart = new ColumnChart({
@@ -138,10 +146,9 @@ export default class Page {
   }
 
   initEventListeners () {
-    this.components.rangePicker.element.addEventListener('date-select', event => {
+    this.components.rangePicker.element.addEventListener('date-select', async event => {
       const { from, to } = event.detail;
-      this.updateChartsComponents(from, to);
-      this.updateTableComponent(from, to);
+      await Promise.all([this.updateChartsComponents(from, to), this.updateTableComponent(from, to)]);
     });
   }
 
