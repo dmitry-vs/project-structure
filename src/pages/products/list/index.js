@@ -1,6 +1,8 @@
 import DoubleSlider from '../../../components/double-slider';
 import SortableTable from '../../../components/sortable-table';
+import NotificationMessage from '../../../components/notification';
 import header from './products-header.js';
+import { FetchError } from '../../../utils/fetch-json';
 
 export default class Page {
   element;
@@ -28,6 +30,13 @@ export default class Page {
   onStatusSelectChange = async ({ target: { value: newStatus } }) => {
     this.filters.status = newStatus ? newStatus : null;
     await this.updateTableComponent();
+  }
+
+  onUnhandledRejection = event => {
+    if (event.reason instanceof FetchError) {
+      this.components.notification.show(this.element);
+      event.preventDefault();
+    }
   }
 
   async updateTableComponent() {
@@ -99,6 +108,10 @@ export default class Page {
     this.components.sortableTable = new SortableTable(header, {
       url: this.getTableUrl(),
     });
+
+    this.components.notification = new NotificationMessage('Error occurred', {
+      type: 'error',
+    });
   }
 
   getTableUrl() {
@@ -123,11 +136,18 @@ export default class Page {
     this.components.doubleSlider.element.addEventListener('range-select', this.onRangeSelect);
     this.subElements['filterStatus'].addEventListener('change', this.onStatusSelectChange);
     this.subElements['filterName'].addEventListener('input', this.onFilterNameInput);
+    window.addEventListener('unhandledrejection', this.onUnhandledRejection);
   }
 
   destroy() {
+    this.removeEventListeners();
+
     for (const component of Object.values(this.components)) {
       component.destroy();
     }
+  }
+
+  removeEventListeners() {
+    window.removeEventListener('unhandledrejection', this.onUnhandledRejection);
   }
 }

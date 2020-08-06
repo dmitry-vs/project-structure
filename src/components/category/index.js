@@ -15,7 +15,7 @@ export default class Category {
 
   onSubcategoriesReorder = async () => {
     await this.updateSubcategoriesOnServer();
-    this.notification.show();
+    this.notification.show(this.element);
   }
 
   updateSubcategoriesOnServer() {
@@ -46,10 +46,6 @@ export default class Category {
     this.weight = weight;
 
     this.notification = new Notification('Category order saved');
-    const notificationStyle = this.notification.element.style;
-    notificationStyle.position = 'fixed';
-    notificationStyle.right = '20px';
-    notificationStyle.bottom = '20px';
   }
 
   get template() {

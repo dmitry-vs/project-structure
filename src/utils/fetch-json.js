@@ -44,11 +44,3 @@ export class FetchError extends Error {
     this.body = body;
   }
 }
-
-// handle uncaught failed fetch through
-window.addEventListener('unhandledrejection', event => {
-  if (event.reason instanceof FetchError) {
-    alert(event.reason.message);
-  }
-});
-

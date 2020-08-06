@@ -40,3 +40,9 @@
   justify-content: center;
   color: var(--grey);
 }
+
+.products-list .notification {
+  position: fixed;
+  bottom: 15px;
+  right: 20px;
+}
