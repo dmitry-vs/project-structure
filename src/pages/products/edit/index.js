@@ -29,7 +29,7 @@ export default class Page {
       <div class="products-edit">
         <div class="content__top-panel">
           <h1 class="page-title">
-            <a href="/products" class="link">Товары</a> / Добавить
+            <a href="/products" class="link">Товары</a> / ${this.getProductIdFromPath() ? 'Редактировать' : 'Добавить'}
           </h1>
         </div>
         <div class="content-box" data-element="productFormContainer"></div>
@@ -60,16 +60,19 @@ export default class Page {
   }
 
   initComponents() {
-    const strippedPath = decodeURI(window.location.pathname).replace(/^\/|\/$/, '');
-    const [, pathEnding] = strippedPath.split('/');
-
-    this.components.productForm = pathEnding === 'add' ? new ProductForm() : new ProductForm(pathEnding);
+    this.components.productForm = new ProductForm(this.getProductIdFromPath());
 
     this.components.notificationUpdated = new NotificationMessage('Product updated');
 
     this.components.notificationError = new NotificationMessage('Server responded with error', {
       type: 'error',
     });
+  }
+
+  getProductIdFromPath() {
+    const strippedPath = decodeURI(window.location.pathname).replace(/^\/|\/$/, '');
+    const [, pathEnding] = strippedPath.split('/');
+    return pathEnding !== 'add' ? pathEnding : null;
   }
 
   async renderComponents() {
