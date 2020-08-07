@@ -109,7 +109,7 @@ export default class Page {
       url: this.getTableUrl(),
     });
 
-    this.components.notification = new NotificationMessage('Error occurred', {
+    this.components.notification = new NotificationMessage('Server responded with error', {
       type: 'error',
     });
   }

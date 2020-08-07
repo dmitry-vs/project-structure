@@ -41,12 +41,6 @@
   color: var(--grey);
 }
 
-.products-list .notification {
-  position: fixed;
-  bottom: 15px;
-  right: 20px;
-}
-
 .products-list .sortable-table__row {
   grid: auto-flow / 80px calc(50% - 80px) 20% 10% 10% 10%;
 }

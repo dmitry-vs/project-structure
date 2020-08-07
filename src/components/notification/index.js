@@ -1,6 +1,5 @@
 export default class NotificationMessage {
   element = null;
-  static instance = null;
 
   constructor(name = '', {
     duration = 1000,
@@ -9,11 +8,6 @@ export default class NotificationMessage {
     this.name = name;
     this.duration = duration;
     this.type = type;
-
-    if (NotificationMessage.instance) {
-      NotificationMessage.instance.remove();
-    }
-    NotificationMessage.instance = this;
 
     this.render();
   }
@@ -49,6 +43,5 @@ export default class NotificationMessage {
 
   destroy() {
     this.remove();
-    NotificationMessage.instance = null;
   }
 }

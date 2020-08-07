@@ -203,7 +203,7 @@ export default class ProductForm {
   async save() {
     const product = this.getFormData();
     const result = await fetchJson(`${process.env.BACKEND_URL}api/rest/products`, {
-      method: 'PATCH',
+      method: this.productId ? 'PATCH' : 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -244,7 +244,7 @@ export default class ProductForm {
   dispatchEvent(id) {
     const event = this.productId
       ? new CustomEvent('product-updated', {detail: id})
-      : new CustomEvent('product-saved');
+      : new CustomEvent('product-saved', {detail: id});
 
     this.element.dispatchEvent(event);
   }

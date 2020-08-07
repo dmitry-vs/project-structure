@@ -27,12 +27,6 @@
   flex: 1 0 auto;
 }
 
-.category .notification {
-  position: fixed;
-  bottom: 15px;
-  right: 20px;
-}
-
 .category__header {
   display: flex;
   flex-flow: row wrap;
