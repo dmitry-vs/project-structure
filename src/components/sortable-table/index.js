@@ -66,6 +66,7 @@ export default class SortableTable {
     step = STEP_DEFAULT,
     start = START_DEFAULT,
     end = start + step,
+    rowTemplate = null,
   } = {}) {
 
     this.headersConfig = headersConfig;
@@ -75,6 +76,7 @@ export default class SortableTable {
     this.step = step;
     this.start = start;
     this.end = end;
+    this.rowTemplate = rowTemplate;
 
     this.render();
   }
@@ -125,11 +127,7 @@ export default class SortableTable {
     this.data = [...this.data, ...data];
     rows.innerHTML = this.getTableRows(data);
 
-    // TODO: This is comparison of performance append vs insertAdjacentHTML
-    // console.time('timer');
-    // this.subElements.body.insertAdjacentHTML('beforeend', rows.innerHTML);
     this.subElements.body.append(...rows.childNodes);
-    // console.timeEnd('timer');
   }
 
   getTableHeader() {
@@ -167,11 +165,19 @@ export default class SortableTable {
   }
 
   getTableRows (data) {
-    return data.map(item => `
-      <div class="sortable-table__row">
-        ${this.getTableRow(item, data)}
-      </div>`
-    ).join('');
+    return data.map(item => {
+      const rowContent = this.getTableRow(item);
+
+      if (typeof this.rowTemplate === 'function') return this.rowTemplate({
+        id: item.id,
+        content: rowContent,
+      });
+      else return `
+        <div class="sortable-table__row">
+          ${rowContent}
+        </div>
+      `;
+    }).join('');
   }
 
   getTableRow (item) {

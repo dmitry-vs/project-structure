@@ -107,6 +107,11 @@ export default class Page {
 
     this.components.sortableTable = new SortableTable(header, {
       url: this.getTableUrl(),
+      rowTemplate: ({ id, content }) => `
+        <a class="sortable-table__row" href="/products/${id}">
+          ${content}
+        </a>
+      `,
     });
 
     this.components.notification = new NotificationMessage('Server responded with error', {
