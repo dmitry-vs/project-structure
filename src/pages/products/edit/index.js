@@ -14,12 +14,15 @@ export default class Page {
   }
 
   onProductUpdated = () => {
-    this.components.notificationUpdated.show(this.element);
+    new NotificationMessage('Product updated').show(this.element);
   }
 
   onUnhandledRejection = event => {
     if (event.reason instanceof FetchError) {
-      this.components.notificationError.show(this.element);
+      new NotificationMessage('Server responded with error', {
+        type: 'error',
+      }).show(this.element);
+
       event.preventDefault();
     }
   }
@@ -61,12 +64,6 @@ export default class Page {
 
   initComponents() {
     this.components.productForm = new ProductForm(this.getProductIdFromPath());
-
-    this.components.notificationUpdated = new NotificationMessage('Product updated');
-
-    this.components.notificationError = new NotificationMessage('Server responded with error', {
-      type: 'error',
-    });
   }
 
   getProductIdFromPath() {
@@ -76,7 +73,8 @@ export default class Page {
   }
 
   async renderComponents() {
-    this.subElements['productFormContainer'].append(await this.components.productForm.render());
+    const productFormElement = await this.components.productForm.render();
+    this.subElements['productFormContainer'].append(productFormElement);
   }
 
   initEventListeners() {

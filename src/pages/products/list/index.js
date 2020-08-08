@@ -34,7 +34,10 @@ export default class Page {
 
   onUnhandledRejection = event => {
     if (event.reason instanceof FetchError) {
-      this.components.notification.show(this.element);
+      new NotificationMessage('Server responded with error', {
+        type: 'error',
+      }).show(this.element);
+
       event.preventDefault();
     }
   }
@@ -112,10 +115,6 @@ export default class Page {
           ${content}
         </a>
       `,
-    });
-
-    this.components.notification = new NotificationMessage('Server responded with error', {
-      type: 'error',
     });
   }
 
